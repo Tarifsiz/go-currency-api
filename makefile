@@ -1,0 +1,146 @@
+# Variables
+BINARY_NAME=go-currency-api
+DOCKER_COMPOSE_FILE=docker-compose.yml
+DB_URL=postgresql://currency_user:currency_pass@localhost:5432/currency_db?sslmode=disable
+
+# Colors for output
+RED=\033[0;31m
+GREEN=\033[0;32m
+YELLOW=\033[0;33m
+NC=\033[0m # No Color
+
+.PHONY: help build run test clean docker-up docker-down migrate-up migrate-down
+
+# Default target
+help:
+	@echo "Available targets:"
+	@echo "  $(GREEN)build$(NC)          - Build the application"
+	@echo "  $(GREEN)run$(NC)            - Run the application"
+	@echo "  $(GREEN)test$(NC)           - Run tests"
+	@echo "  $(GREEN)test-coverage$(NC)  - Run tests with coverage"
+	@echo "  $(GREEN)clean$(NC)          - Clean build artifacts"
+	@echo "  $(GREEN)docker-up$(NC)      - Start Docker services"
+	@echo "  $(GREEN)docker-down$(NC)    - Stop Docker services"
+	@echo "  $(GREEN)docker-logs$(NC)    - View Docker logs"
+	@echo "  $(GREEN)migrate-up$(NC)     - Run database migrations"
+	@echo "  $(GREEN)migrate-down$(NC)   - Rollback database migrations"
+	@echo "  $(GREEN)dev$(NC)            - Start development environment"
+	@echo "  $(GREEN)lint$(NC)           - Run linter"
+
+# Build the application
+build:
+	@echo "$(YELLOW)Building $(BINARY_NAME)...$(NC)"
+	go build -o bin/$(BINARY_NAME) cmd/api/main.go
+	@echo "$(GREEN)Build completed!$(NC)"
+
+# Run the application
+run:
+	@echo "$(YELLOW)Running $(BINARY_NAME)...$(NC)"
+	go run cmd/api/main.go
+
+# Run tests
+test:
+	@echo "$(YELLOW)Running tests...$(NC)"
+	go test -v ./...
+
+# Run tests with coverage
+test-coverage:
+	@echo "$(YELLOW)Running tests with coverage...$(NC)"
+	go test -v -race -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out -o coverage.html
+	@echo "$(GREEN)Coverage report generated: coverage.html$(NC)"
+
+# Clean build artifacts
+clean:
+	@echo "$(YELLOW)Cleaning...$(NC)"
+	go clean
+	rm -f bin/$(BINARY_NAME)
+	rm -f coverage.out coverage.html
+	@echo "$(GREEN)Clean completed!$(NC)"
+
+# Start Docker services
+docker-up:
+	@echo "$(YELLOW)Starting Docker services...$(NC)"
+	docker-compose -f $(DOCKER_COMPOSE_FILE) up -d
+	@echo "$(GREEN)Docker services started!$(NC)"
+	@echo "$(YELLOW)PostgreSQL:$(NC) localhost:5432"
+	@echo "$(YELLOW)Redis:$(NC) localhost:6379"
+
+# Start Docker services with tools (pgAdmin, Redis Commander)
+docker-up-tools:
+	@echo "$(YELLOW)Starting Docker services with tools...$(NC)"
+	docker-compose -f $(DOCKER_COMPOSE_FILE) --profile tools up -d
+	@echo "$(GREEN)Docker services with tools started!$(NC)"
+	@echo "$(YELLOW)PostgreSQL:$(NC) localhost:5432"
+	@echo "$(YELLOW)Redis:$(NC) localhost:6379"
+	@echo "$(YELLOW)pgAdmin:$(NC) http://localhost:5050 (admin@admin.com / admin)"
+	@echo "$(YELLOW)Redis Commander:$(NC) http://localhost:8081"
+
+# Stop Docker services
+docker-down:
+	@echo "$(YELLOW)Stopping Docker services...$(NC)"
+	docker-compose -f $(DOCKER_COMPOSE_FILE) down
+	@echo "$(GREEN)Docker services stopped!$(NC)"
+
+# View Docker logs
+docker-logs:
+	docker-compose -f $(DOCKER_COMPOSE_FILE) logs -f
+
+# Install migrate tool if not present
+install-migrate:
+	@which migrate > /dev/null || (echo "Installing golang-migrate..." && \
+		curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz && \
+		sudo mv migrate /usr/local/bin/)
+
+# Run database migrations up
+migrate-up: install-migrate
+	@echo "$(YELLOW)Running database migrations...$(NC)"
+	migrate -path migrations -database "$(DB_URL)" -verbose up
+	@echo "$(GREEN)Migrations completed!$(NC)"
+
+# Rollback database migrations
+migrate-down: install-migrate
+	@echo "$(YELLOW)Rolling back database migrations...$(NC)"
+	migrate -path migrations -database "$(DB_URL)" -verbose down 1
+	@echo "$(GREEN)Rollback completed!$(NC)"
+
+# Create a new migration
+migrate-create: install-migrate
+	@read -p "Enter migration name: " name; \
+	migrate create -ext sql -dir migrations $$name
+	@echo "$(GREEN)Migration files created!$(NC)"
+
+# Start development environment
+dev: docker-up
+	@echo "$(YELLOW)Waiting for services to be ready...$(NC)"
+	sleep 5
+	@echo "$(YELLOW)Running migrations...$(NC)"
+	make migrate-up
+	@echo "$(GREEN)Development environment ready!$(NC)"
+	@echo "$(YELLOW)Starting application...$(NC)"
+	make run
+
+# Install dependencies
+deps:
+	@echo "$(YELLOW)Installing dependencies...$(NC)"
+	go mod download
+	go mod tidy
+	@echo "$(GREEN)Dependencies installed!$(NC)"
+
+# Run linter (requires golangci-lint)
+lint:
+	@echo "$(YELLOW)Running linter...$(NC)"
+	golangci-lint run
+	@echo "$(GREEN)Linting completed!$(NC)"
+
+# Format code
+fmt:
+	@echo "$(YELLOW)Formatting code...$(NC)"
+	go fmt ./...
+	@echo "$(GREEN)Code formatted!$(NC)"
+
+# Run security check
+security:
+	@echo "$(YELLOW)Running security check...$(NC)"
+	gosec ./...
+	@echo "$(GREEN)Security check completed!$(NC)"

@@ -1,244 +1,190 @@
-# Go Currency API
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/golang-migrate/migrate/ci.yaml?branch=master)](https://github.com/golang-migrate/migrate/actions/workflows/ci.yaml?query=branch%3Amaster)
+[![GoDoc](https://pkg.go.dev/badge/github.com/golang-migrate/migrate)](https://pkg.go.dev/github.com/golang-migrate/migrate/v4)
+[![Coverage Status](https://img.shields.io/coveralls/github/golang-migrate/migrate/master.svg)](https://coveralls.io/github/golang-migrate/migrate?branch=master)
+[![packagecloud.io](https://img.shields.io/badge/deb-packagecloud.io-844fec.svg)](https://packagecloud.io/golang-migrate/migrate?filter=debs)
+[![Docker Pulls](https://img.shields.io/docker/pulls/migrate/migrate.svg)](https://hub.docker.com/r/migrate/migrate/)
+![Supported Go Versions](https://img.shields.io/badge/Go-1.19%2C%201.20-lightgrey.svg)
+[![GitHub Release](https://img.shields.io/github/release/golang-migrate/migrate.svg)](https://github.com/golang-migrate/migrate/releases)
+[![Go Report Card](https://goreportcard.com/badge/github.com/golang-migrate/migrate/v4)](https://goreportcard.com/report/github.com/golang-migrate/migrate/v4)
 
-A production-ready RESTful API for currency information of countries built with Go, featuring getting currency info of countries, caching with Redis, and PostgreSQL for data persistence.
+# migrate
 
-## 🚀 Features
+__Database migrations written in Go. Use as [CLI](#cli-usage) or import as [library](#use-in-your-go-project).__
 
-- **RESTful API** - Clean and well-documented endpoints
-- **Currency information of Countries** - Up-to-date currency of countries
-- **Redis Caching** - High-performance rate caching
-- **PostgreSQL Database** - Reliable data persistence  
-- **Docker Support** - Easy development setup
-- **Comprehensive Testing** - Unit and integration tests
-- **Health Monitoring** - Health check endpoints
-- **CORS Support** - Frontend integration ready
-- **Graceful Shutdown** - Proper resource cleanup
+* Migrate reads migrations from [sources](#migration-sources)
+   and applies them in correct order to a [database](#databases).
+* Drivers are "dumb", migrate glues everything together and makes sure the logic is bulletproof.
+   (Keeps the drivers lightweight, too.)
+* Database drivers don't assume things or try to correct user input. When in doubt, fail.
 
-## 🛠️ Tech Stack
+Forked from [mattes/migrate](https://github.com/mattes/migrate)
 
-- **Language**: Go 1.21+
-- **Framework**: Gin HTTP Framework
-- **Database**: PostgreSQL 15
-- **Cache**: Redis 7
-- **ORM**: GORM
-- **Migration**: golang-migrate
-- **Testing**: testify
-- **Containerization**: Docker & Docker Compose
+## Databases
 
-## 📁 Project Structure
+Database drivers run migrations. [Add a new database?](database/driver.go)
 
-```
-go-currency-api/
-├── cmd/
-│   └── api/                 # Application entry point
-├── internal/
-│   ├── config/             # Configuration management
-│   ├── handler/            # HTTP handlers
-│   ├── service/            # Business logic
-│   ├── repository/         # Data access layer
-│   └── model/              # Data models
-├── pkg/                    # Shared packages
-├── migrations/             # Database migrations
-├── docker/                 # Docker configurations
-├── scripts/                # Utility scripts
-└── docs/                   # Documentation
-```
+* [PostgreSQL](database/postgres)
+* [PGX v4](database/pgx)
+* [PGX v5](database/pgx/v5)
+* [Redshift](database/redshift)
+* [Ql](database/ql)
+* [Cassandra](database/cassandra)
+* [SQLite](database/sqlite)
+* [SQLite3](database/sqlite3) ([todo #165](https://github.com/mattes/migrate/issues/165))
+* [SQLCipher](database/sqlcipher)
+* [MySQL/ MariaDB](database/mysql)
+* [Neo4j](database/neo4j)
+* [MongoDB](database/mongodb)
+* [CrateDB](database/crate) ([todo #170](https://github.com/mattes/migrate/issues/170))
+* [Shell](database/shell) ([todo #171](https://github.com/mattes/migrate/issues/171))
+* [Google Cloud Spanner](database/spanner)
+* [CockroachDB](database/cockroachdb)
+* [YugabyteDB](database/yugabytedb)
+* [ClickHouse](database/clickhouse)
+* [Firebird](database/firebird)
+* [MS SQL Server](database/sqlserver)
 
-## 🚀 Quick Start
+### Database URLs
 
-### Prerequisites
+Database connection strings are specified via URLs. The URL format is driver dependent but generally has the form: `dbdriver://username:password@host:port/dbname?param1=true&param2=false`
 
-- Go 1.21 or higher
-- Docker and Docker Compose
-- Make (optional, for convenience commands)
+Any [reserved URL characters](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters) need to be escaped. Note, the `%` character also [needs to be escaped](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_the_percent_character)
 
-### Installation
+Explicitly, the following characters need to be escaped:
+`!`, `#`, `$`, `%`, `&`, `'`, `(`, `)`, `*`, `+`, `,`, `/`, `:`, `;`, `=`, `?`, `@`, `[`, `]`
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Tarifsiz/go-currency-api.git
-   cd go-currency-api
-   ```
+It's easiest to always run the URL parts of your DB connection URL (e.g. username, password, etc) through an URL encoder. See the example Python snippets below:
 
-2. **Initialize Go module and install dependencies**
-   ```bash
-   go mod init github.com/Tarifsiz/go-currency-api
-   go mod tidy
-   ```
-
-3. **Start the infrastructure services**
-   ```bash
-   make docker-up
-   # Or manually: docker-compose up -d
-   ```
-
-4. **Run database migrations**
-   ```bash
-   make migrate-up
-   ```
-
-5. **Start the API server**
-   ```bash
-   make run
-   # Or manually: go run cmd/api/main.go
-   ```
-
-The API will be available at `http://localhost:8080`
-
-### Development with Tools
-
-Start with database and Redis admin tools:
 ```bash
-make docker-up-tools
+$ python3 -c 'import urllib.parse; print(urllib.parse.quote(input("String to encode: "), ""))'
+String to encode: FAKEpassword!#$%&'()*+,/:;=?@[]
+FAKEpassword%21%23%24%25%26%27%28%29%2A%2B%2C%2F%3A%3B%3D%3F%40%5B%5D
+$ python2 -c 'import urllib; print urllib.quote(raw_input("String to encode: "), "")'
+String to encode: FAKEpassword!#$%&'()*+,/:;=?@[]
+FAKEpassword%21%23%24%25%26%27%28%29%2A%2B%2C%2F%3A%3B%3D%3F%40%5B%5D
+$
 ```
 
-This provides:
-- **pgAdmin**: http://localhost:5050 (admin@admin.com / admin)
-- **Redis Commander**: http://localhost:8081
+## Migration Sources
 
-## 📚 API Documentation
+Source drivers read migrations from local or remote sources. [Add a new source?](source/driver.go)
 
-### Base URL
-```
-http://localhost:8080/api/v1
-```
+* [Filesystem](source/file) - read from filesystem
+* [io/fs](source/iofs) - read from a Go [io/fs](https://pkg.go.dev/io/fs#FS)
+* [Go-Bindata](source/go_bindata) - read from embedded binary data ([jteeuwen/go-bindata](https://github.com/jteeuwen/go-bindata))
+* [pkger](source/pkger) - read from embedded binary data ([markbates/pkger](https://github.com/markbates/pkger))
+* [GitHub](source/github) - read from remote GitHub repositories
+* [GitHub Enterprise](source/github_ee) - read from remote GitHub Enterprise repositories
+* [Bitbucket](source/bitbucket) - read from remote Bitbucket repositories
+* [Gitlab](source/gitlab) - read from remote Gitlab repositories
+* [AWS S3](source/aws_s3) - read from Amazon Web Services S3
+* [Google Cloud Storage](source/google_cloud_storage) - read from Google Cloud Platform Storage
 
-### Endpoints
+## CLI usage
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-| GET | `/api/v1/currencies` | List supported currencies |
+* Simple wrapper around this library.
+* Handles ctrl+c (SIGINT) gracefully.
+* No config search paths, no config files, no magic ENV var injections.
 
-### Example Requests
+__[CLI Documentation](cmd/migrate)__
 
-**Health Check**
+### Basic usage
+
 ```bash
-curl http://localhost:8080/health
+$ migrate -source file://path/to/migrations -database postgres://localhost:5432/database up 2
 ```
 
-**Get Currencies**
+### Docker usage
+
 ```bash
-curl http://localhost:8080/api/v1/currencies
+$ docker run -v {{ migration dir }}:/migrations --network host migrate/migrate
+    -path=/migrations/ -database postgres://localhost:5432/database up 2
 ```
 
-### Response Format
+## Use in your Go project
 
-All API responses follow a consistent structure:
-```json
-{
-  "success": true,
-  "data": {...},
-  "error": null,
-  "timestamp": "2024-01-01T00:00:00Z"
+* API is stable and frozen for this release (v3 & v4).
+* Uses [Go modules](https://golang.org/cmd/go/#hdr-Modules__module_versions__and_more) to manage dependencies.
+* To help prevent database corruptions, it supports graceful stops via `GracefulStop chan bool`.
+* Bring your own logger.
+* Uses `io.Reader` streams internally for low memory overhead.
+* Thread-safe and no goroutine leaks.
+
+__[Go Documentation](https://pkg.go.dev/github.com/golang-migrate/migrate/v4)__
+
+```go
+import (
+    "github.com/golang-migrate/migrate/v4"
+    _ "github.com/golang-migrate/migrate/v4/database/postgres"
+    _ "github.com/golang-migrate/migrate/v4/source/github"
+)
+
+func main() {
+    m, err := migrate.New(
+        "github://mattes:personal-access-token@mattes/migrate_test",
+        "postgres://localhost:5432/database?sslmode=enable")
+    m.Steps(2)
 }
 ```
 
-## 🧪 Testing
+Want to use an existing database client?
 
-Run the test suite:
-```bash
-make test
+```go
+import (
+    "database/sql"
+    _ "github.com/lib/pq"
+    "github.com/golang-migrate/migrate/v4"
+    "github.com/golang-migrate/migrate/v4/database/postgres"
+    _ "github.com/golang-migrate/migrate/v4/source/file"
+)
+
+func main() {
+    db, err := sql.Open("postgres", "postgres://localhost:5432/database?sslmode=enable")
+    driver, err := postgres.WithInstance(db, &postgres.Config{})
+    m, err := migrate.NewWithDatabaseInstance(
+        "file:///migrations",
+        "postgres", driver)
+    m.Up() // or m.Step(2) if you want to explicitly set the number of migrations to run
+}
 ```
 
-Run tests with coverage:
+## Getting started
+
+Go to [getting started](GETTING_STARTED.md)
+
+## Tutorials
+
+* [CockroachDB](database/cockroachdb/TUTORIAL.md)
+* [PostgreSQL](database/postgres/TUTORIAL.md)
+
+(more tutorials to come)
+
+## Migration files
+
+Each migration has an up and down migration. [Why?](FAQ.md#why-two-separate-files-up-and-down-for-a-migration)
+
 ```bash
-make test-coverage
+1481574547_create_users_table.up.sql
+1481574547_create_users_table.down.sql
 ```
 
-## 🐳 Docker Commands
+[Best practices: How to write migrations.](MIGRATIONS.md)
 
-| Command | Description |
-|---------|-------------|
-| `make docker-up` | Start PostgreSQL and Redis |
-| `make docker-up-tools` | Start with admin tools |
-| `make docker-down` | Stop all services |
-| `make docker-logs` | View service logs |
+## Versions
 
-## 🗄️ Database
+Version | Supported? | Import | Notes
+--------|------------|--------|------
+**master** | :white_check_mark: | `import "github.com/golang-migrate/migrate/v4"` | New features and bug fixes arrive here first |
+**v4** | :white_check_mark: | `import "github.com/golang-migrate/migrate/v4"` | Used for stable releases |
+**v3** | :x: | `import "github.com/golang-migrate/migrate"` (with package manager) or `import "gopkg.in/golang-migrate/migrate.v3"` (not recommended) | **DO NOT USE** - No longer supported |
 
-### Connection Details
-- **Host**: localhost:5432
-- **Database**: currency_db
-- **User**: currency_user
-- **Password**: currency_pass
+## Development and Contributing
 
-### Migrations
+Yes, please! [`Makefile`](Makefile) is your friend,
+read the [development guide](CONTRIBUTING.md).
 
-Create a new migration:
-```bash
-make migrate-create
-```
-
-Run migrations:
-```bash
-make migrate-up
-```
-
-Rollback migrations:
-```bash
-make migrate-down
-```
-
-## ⚡ Redis Cache
-
-- **Host**: localhost:6379
-- **Database**: 0
-- **Use**: Exchange rate caching, session storage
-
-## 🔧 Configuration
-
-Configure via environment variables:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SERVER_PORT` | 8080 | API server port |
-| `DB_HOST` | localhost | PostgreSQL host |
-| `DB_PORT` | 5432 | PostgreSQL port |
-| `DB_USER` | currency_user | Database user |
-| `DB_PASSWORD` | currency_pass | Database password |
-| `DB_NAME` | currency_db | Database name |
-| `REDIS_ADDR` | localhost:6379 | Redis address |
-
-## 📈 Development Roadmap
-
-This project follows a structured development approach with daily iterations:
-
-- **Week 1**: Core infrastructure and basic API
-- **Week 2**: Advanced features, testing, and optimization
-
-See the [Development Guide](docs/DEVELOPMENT.md) for detailed iteration plans.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 Commit Convention
-
-This project follows [Conventional Commits](https://www.conventionalcommits.org/):
-
-- `feat:` - New features
-- `fix:` - Bug fixes
-- `refactor:` - Code refactoring
-- `test:` - Adding tests
-- `docs:` - Documentation updates
-- `chore:` - Maintenance tasks
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [Go](https://golang.org/)
-- Web framework by [Gin](https://gin-gonic.com/)
-- Database by [PostgreSQL](https://www.postgresql.org/)
-- Caching by [Redis](https://redis.io/)
+Also have a look at the [FAQ](FAQ.md).
 
 ---
 
-**Made with ❤️ by [Tarifsiz](https://github.com/Tarifsiz)**
+Looking for alternatives? [https://awesome-go.com/#database](https://awesome-go.com/#database).

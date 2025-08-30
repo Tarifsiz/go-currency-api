@@ -20,6 +20,7 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
+
 func main() {
 	// Load configuration
 	cfg, err := config.Load()
@@ -50,10 +51,9 @@ func main() {
 
 	// Initialize repositories
 	currencyRepo := repository.NewCurrencyRepository(db)
-	rateRepo := repository.NewRateRepository(db)
 
 	// Initialize services
-	currencyService := service.NewCurrencyService(currencyRepo, rateRepo, redisClient)
+	currencyService := service.NewCurrencyService(currencyRepo, redisClient)
 
 	// Initialize handlers
 	currencyHandler := handler.NewCurrencyHandler(currencyService)

@@ -1,5 +1,5 @@
--- Insert currencies based on the provided data
--- Using a fixed UUID for created_by
+-- Insert currencies based on your provided data
+-- Using a fixed UUID for created_by (you can replace this with actual admin user ID)
 
 INSERT INTO currencies (id, code, description, amount_display_format, html_encoded_symbol, factor, created_by) VALUES 
 -- Original batch
@@ -12,7 +12,7 @@ INSERT INTO currencies (id, code, description, amount_display_format, html_encod
 ('03bd3b96-59ac-4329-9951-1ecffd3f7de7', 'SEK', 'Swedish Krona', '###,###.##', '&#107;&#114;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('e87d08bc-3fc1-4f52-91bd-1ed21153ada0', 'KES', 'Kenyan Shilling', '###,###.##', '&#75;&#83;&#104;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 
--- Additional batch from new data
+-- Second batch
 ('ac508807-d802-4cc2-bcda-27db132b7c06', 'CAD', 'Canadian Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('7c758828-db9e-4db6-87df-2cc1f54b7709', 'GBP', 'British Pound', '###,###.##', '&#163;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('ad03349f-0514-4bbc-98ac-2faa2dd41b46', 'OMR', 'Omani Rial', '###,###.###', '&#65020;', 1000, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
@@ -22,14 +22,39 @@ INSERT INTO currencies (id, code, description, amount_display_format, html_encod
 ('11514c9a-d6fe-4097-ad02-470a92d06a62', 'JPY', 'Japanese Yen', '###,###', '&#165;', 1, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('6fa52ee6-3e57-416b-aaa7-498309cafd14', 'DKK', 'Danish Krone', '###,###.##', '&#107;&#114;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('077b3d88-950c-41ae-b343-4e2d2634351d', 'HUF', 'Hungarian Forint', '###,###.##', '&#70;&#116;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('edbd44cd-c85b-4476-aa83-4fbe3f3c2182', 'IDR', 'Indonesian Rupiah', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24');
+('edbd44cd-c85b-4476-aa83-4fbe3f3c2182', 'IDR', 'Indonesian Rupiah', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 
--- Add some other common major currencies for completeness
-INSERT INTO currencies (code, description, amount_display_format, html_encoded_symbol, factor, created_by) VALUES 
-('USD', 'United States Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('EUR', 'Euro', '###,###.##', '&#8364;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('CHF', 'Swiss Franc', '###,###.##', '&#67;&#72;&#70;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('CNY', 'Chinese Yuan', '###,###.##', '&#165;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('INR', 'Indian Rupee', '###,###.##', '&#8377;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('TRY', 'Turkish Lira', '###,###.##', '&#8378;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('AUD', 'Australian Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24');
+-- Third batch (latest addition)
+('7e509017-80d4-40fb-8c87-4fe3aec02324', 'KWD', 'Kuwaiti Dinar', '###,###.###', '&#1583;.&#1603;', 1000, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('339a5832-2ea1-4c89-9c3a-53749c6a7290', 'TWD', 'TAIWANESE DOLLAR', '###,###.##', '&#78;&#84;&#36', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('f5d2bc5d-70fd-4d23-acba-56a8b03f3c8f', 'TTD', 'Trinidad and Tobago Dollar', '###,###.##', '&#84;&#84;&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('57a81844-3bf8-4e0b-9127-5bd6573d0385', 'QAR', 'Qatari Rial', '###,###.##', '&#65020;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('005753c8-63bc-411d-8cbf-5ce84cd67b34', 'MYR', 'Malaysian Ringgit', '###,###.##', '&#82;&#77;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('8f2c6062-7940-4784-8685-632b0a24d51c', 'HKD', 'Hong Kong Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('24b98329-03d9-4048-8c11-63b7edd9df4d', 'USD', 'United States Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('4c26af8d-7f21-4b6d-a0a2-68a95e938956', 'CNY', 'Chinese Yuan', '###,###.##', '&#165;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('3726c829-ff73-45d0-8412-6a1618d6952a', 'BBD', 'Barbados Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('5694c40a-975b-4616-8189-6c104186d262', 'ZMW', 'Zambian Kwacha', '###,###.##', 'ZK', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('b8b377ee-b041-4fcd-8b0c-77e460827463', 'PLN', 'Polish Zloty', '###,###.##', '&#122;&#322;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('32762155-0e36-4776-aecf-80c75bf510d5', 'CHF', 'Swiss Franc', '###,###.##', '&#67;&#72;&#70;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('f78ad93e-9dc2-4680-ac38-81adb29a3f14', 'XOF', 'West African CFA franc', '###,###', 'CFA', 1, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('52c67801-719f-4714-8dd1-879500e61c53', 'BWP', 'Botswana Pula', '###,###.##', '&#80;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('d670338d-0b2b-4dbe-b28d-8b870a4aebf6', 'BHD', 'Bahraini Dinar', '###,###.###', '&#1583;', 1000, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('09565596-8681-4921-9d7a-8ba83eea6edf', 'KZT', 'Kazakhstani Tenge', '###,###.##', '&#8376;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('86cb2966-42cc-4fb3-a628-9ab11ce42812', 'EGP', 'Egyptian Pound', '###,###.##', '&#163;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('d3b1a1d6-0565-42ba-946f-9d6cea199783', 'ISK', 'Icelandic Krona', '###,###', '&#107;&#114;', 1, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('012aa158-46bf-4b53-b2ae-9f1e57464f79', 'MWK', 'Malawian Kwacha', '###,###.##', '&#77;&#75;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+('0a43408e-73fd-4563-82cc-9f7694562428', 'HRK', 'Croatian Kuna', '###,###.##', '&#107;&#110;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24');
+
+-- Add some other common major currencies for completeness (only if not already included above)
+INSERT INTO currencies (code, description, amount_display_format, html_encoded_symbol, factor, created_by) 
+SELECT * FROM (
+    VALUES 
+    ('EUR', 'Euro', '###,###.##', '&#8364;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+    ('INR', 'Indian Rupee', '###,###.##', '&#8377;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+    ('TRY', 'Turkish Lira', '###,###.##', '&#8378;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
+    ('AUD', 'Australian Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24')
+) AS new_currencies(code, description, amount_display_format, html_encoded_symbol, factor, created_by)
+WHERE NOT EXISTS (
+    SELECT 1 FROM currencies WHERE currencies.code = new_currencies.code
+);

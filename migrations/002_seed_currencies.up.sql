@@ -1,8 +1,4 @@
--- Insert currencies based on your provided data
--- Using a fixed UUID for created_by (you can replace this with actual admin user ID)
-
 INSERT INTO currencies (id, code, description, amount_display_format, html_encoded_symbol, factor, created_by) VALUES 
--- Original batch
 ('eb30cd07-76fe-4b24-b9f2-0274eabf304f', 'AED', 'United Arab Emirates Dirham', '###,###.##', '&#x62f;&#x2e;&#x625;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('4022f85b-c321-43e6-9e31-03f37c6de0b9', 'MAD', 'Moroccan Dirham', '###,###.##', '&#77;&#65;&#68;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('9d4d2f61-56d6-4893-a553-10d91edb7837', 'MUR', 'Mauritian Rupee', '###,###.##', '&#8360;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
@@ -11,8 +7,6 @@ INSERT INTO currencies (id, code, description, amount_display_format, html_encod
 ('4f3052d2-9f00-4cea-8a85-1e812cd52fe6', 'ZAR', 'South African Rand', '###,###.##', '&#82;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('03bd3b96-59ac-4329-9951-1ecffd3f7de7', 'SEK', 'Swedish Krona', '###,###.##', '&#107;&#114;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('e87d08bc-3fc1-4f52-91bd-1ed21153ada0', 'KES', 'Kenyan Shilling', '###,###.##', '&#75;&#83;&#104;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-
--- Second batch
 ('ac508807-d802-4cc2-bcda-27db132b7c06', 'CAD', 'Canadian Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('7c758828-db9e-4db6-87df-2cc1f54b7709', 'GBP', 'British Pound', '###,###.##', '&#163;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('ad03349f-0514-4bbc-98ac-2faa2dd41b46', 'OMR', 'Omani Rial', '###,###.###', '&#65020;', 1000, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
@@ -23,8 +17,6 @@ INSERT INTO currencies (id, code, description, amount_display_format, html_encod
 ('6fa52ee6-3e57-416b-aaa7-498309cafd14', 'DKK', 'Danish Krone', '###,###.##', '&#107;&#114;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('077b3d88-950c-41ae-b343-4e2d2634351d', 'HUF', 'Hungarian Forint', '###,###.##', '&#70;&#116;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('edbd44cd-c85b-4476-aa83-4fbe3f3c2182', 'IDR', 'Indonesian Rupiah', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-
--- Third batch
 ('7e509017-80d4-40fb-8c87-4fe3aec02324', 'KWD', 'Kuwaiti Dinar', '###,###.###', '&#1583;.&#1603;', 1000, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('339a5832-2ea1-4c89-9c3a-53749c6a7290', 'TWD', 'TAIWANESE DOLLAR', '###,###.##', '&#78;&#84;&#36', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('f5d2bc5d-70fd-4d23-acba-56a8b03f3c8f', 'TTD', 'Trinidad and Tobago Dollar', '###,###.##', '&#84;&#84;&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
@@ -45,8 +37,6 @@ INSERT INTO currencies (id, code, description, amount_display_format, html_encod
 ('d3b1a1d6-0565-42ba-946f-9d6cea199783', 'ISK', 'Icelandic Krona', '###,###', '&#107;&#114;', 1, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('012aa158-46bf-4b53-b2ae-9f1e57464f79', 'MWK', 'Malawian Kwacha', '###,###.##', '&#77;&#75;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('0a43408e-73fd-4563-82cc-9f7694562428', 'HRK', 'Croatian Kuna', '###,###.##', '&#107;&#110;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-
--- Fourth batch (final addition)
 ('eff67881-5608-4aa6-9a79-a6f14aeb94f8', 'NGN', 'Nigerian Naira', '###,###.##', '&#8358;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('4664244c-96d0-478d-a8dc-b27a31c94f9c', 'AUD', 'Australian Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('53528583-a28d-4448-8b70-b463f2cdcb92', 'RUB', 'Russian Ruble', '###,###.##', '&#8381;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
@@ -68,53 +58,5 @@ INSERT INTO currencies (id, code, description, amount_display_format, html_encod
 ('af6cf3fa-e909-43d0-a595-edf62afc8b1c', 'ILS', 'Israeli New Shekel', '###,###.##', '&#8362;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('a93aa14c-4e7e-4a8b-9817-ef5c5c6cef89', 'TRY', 'Turkish Lira', '###,###.##', '&#x20BA;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
 ('72c8506c-ad12-46c3-a726-fefbdaddd2a6', 'BRL', 'Brazilian Real', '###,###.##', '&#82;&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('5a0b407d-8775-4192-928d-ff4a37bc6e9f', 'CNH', 'Chinese Yuan Renminbi', '###,###.##', '&#165;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24');0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('d670338d-0b2b-4dbe-b28d-8b870a4aebf6', 'BHD', 'Bahraini Dinar', '###,###.###', '&#1583;', 1000, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('09565596-8681-4921-9d7a-8ba83eea6edf', 'KZT', 'Kazakhstani Tenge', '###,###.##', '&#8376;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('86cb2966-42cc-4fb3-a628-9ab11ce42812', 'EGP', 'Egyptian Pound', '###,###.##', '&#163;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('d3b1a1d6-0565-42ba-946f-9d6cea199783', 'ISK', 'Icelandic Krona', '###,###', '&#107;&#114;', 1, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('012aa158-46bf-4b53-b2ae-9f1e57464f79', 'MWK', 'Malawian Kwacha', '###,###.##', '&#77;&#75;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('0a43408e-73fd-4563-82cc-9f7694562428', 'HRK', 'Croatian Kuna', '###,###.##', '&#107;&#110;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-
--- Fourth batch (final addition)
-('eff67881-5608-4aa6-9a79-a6f14aeb94f8', 'NGN', 'Nigerian Naira', '###,###.##', '&#8358;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('4664244c-96d0-478d-a8dc-b27a31c94f9c', 'AUD', 'Australian Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('53528583-a28d-4448-8b70-b463f2cdcb92', 'RUB', 'Russian Ruble', '###,###.##', '&#8381;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('6d7cf892-a914-49fd-8c54-b4bb08d165d8', 'JOD', 'Jordanian Dinar', '###,###.###', '&#74;&#68;', 1000, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('8f52ed9f-474f-4970-8820-b605e858bac4', 'FJD', 'Fijian Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('dd50f669-a9a1-40a1-904e-b76bbb9de7ec', 'THB', 'Thai Baht', '###,###.##', '&#3647;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('605b83ad-9f03-4114-ae1c-c222b9f97beb', 'MXN', 'Mexican Peso', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('edf3a47c-1759-4db0-8e53-caaaad18f337', 'KRW', 'South Korean won', '###,###', '&#8361;', 1, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('64ebd775-074a-4d9e-9cf5-d0db4287efdf', 'NZD', 'New Zealand Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('7ec87103-3c48-4dfc-94f4-d57751ed0024', 'LKR', 'Sri Lankan Rupee', '###,###.##', '&#8360;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('79b8c100-8d5f-4853-96bc-d60dbcfa7dae', 'EUR', 'Euro', '###,###.##', '&#8364;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('d67e8ac4-2dbb-42a1-9baa-d9d64d119847', 'CZK', 'Czech Koruna', '###,###.##', '&#75;&#269;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('9cda8781-589b-4396-8132-dd50e6404e83', 'BGN', 'Bulgarian Lev', '###,###.##', '&#1083;&#1074;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('6dada208-a3d9-4e31-8e88-e199281c2007', 'UGX', 'Ugandan Shilling', '###,###', '&#85;&#83;&#104;', 1, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('ac9ba596-ba38-4de5-b7bf-e1b483d04c5e', 'SGD', 'Singapore Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('a39e41d0-d542-40c0-8893-e95e4051e243', 'INR', 'Indian Rupee', '###,###.##', '&#8377;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('b048a233-0d1a-429e-97b7-ea07f8bbea08', 'GHS', 'Ghanaian Cedi', '###,###.##', '&#162;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('400c213e-15cb-457b-8c67-eb8a66ec66d3', 'PHP', 'Philippine Peso', '###,###.##', '&#8369;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('af6cf3fa-e909-43d0-a595-edf62afc8b1c', 'ILS', 'Israeli New Shekel', '###,###.##', '&#8362;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('a93aa14c-4e7e-4a8b-9817-ef5c5c6cef89', 'TRY', 'Turkish Lira', '###,###.##', '&#x20BA;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('72c8506c-ad12-46c3-a726-fefbdaddd2a6', 'BRL', 'Brazilian Real', '###,###.##', '&#82;&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('5a0b407d-8775-4192-928d-ff4a37bc6e9f', 'CNH', 'Chinese Yuan Renminbi', '###,###.##', '&#165;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24');0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('d670338d-0b2b-4dbe-b28d-8b870a4aebf6', 'BHD', 'Bahraini Dinar', '###,###.###', '&#1583;', 1000, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('09565596-8681-4921-9d7a-8ba83eea6edf', 'KZT', 'Kazakhstani Tenge', '###,###.##', '&#8376;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('86cb2966-42cc-4fb3-a628-9ab11ce42812', 'EGP', 'Egyptian Pound', '###,###.##', '&#163;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('d3b1a1d6-0565-42ba-946f-9d6cea199783', 'ISK', 'Icelandic Krona', '###,###', '&#107;&#114;', 1, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('012aa158-46bf-4b53-b2ae-9f1e57464f79', 'MWK', 'Malawian Kwacha', '###,###.##', '&#77;&#75;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-('0a43408e-73fd-4563-82cc-9f7694562428', 'HRK', 'Croatian Kuna', '###,###.##', '&#107;&#110;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24');
-
--- Add some other common major currencies for completeness (only if not already included above)
-INSERT INTO currencies (code, description, amount_display_format, html_encoded_symbol, factor, created_by) 
-SELECT * FROM (
-    VALUES 
-    ('EUR', 'Euro', '###,###.##', '&#8364;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-    ('INR', 'Indian Rupee', '###,###.##', '&#8377;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-    ('TRY', 'Turkish Lira', '###,###.##', '&#8378;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24'),
-    ('AUD', 'Australian Dollar', '###,###.##', '&#36;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24')
-) AS new_currencies(code, description, amount_display_format, html_encoded_symbol, factor, created_by)
-WHERE NOT EXISTS (
-    SELECT 1 FROM currencies WHERE currencies.code = new_currencies.code
-);
+('5a0b407d-8775-4192-928d-ff4a37bc6e9f', 'CNH', 'Chinese Yuan Renminbi', '###,###.##', '&#165;', 100, '1609b0e1-30c4-402c-a76e-8f5b4d6cfc24')
+ON CONFLICT (code) DO NOTHING;

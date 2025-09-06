@@ -25,7 +25,7 @@ help:
 	@echo "  $(GREEN)migrate-up$(NC)     - Run database migrations"
 	@echo "  $(GREEN)migrate-down$(NC)   - Rollback database migrations"
 	@echo "  $(GREEN)dev$(NC)            - Start development environment"
-	  @echo "  $(GREEN)docker-compose-check$(NC) - Check Docker Compose version"
+	@echo "  $(GREEN)lint$(NC)           - Run linter"
 
 # Build the application
 build:
@@ -61,11 +61,7 @@ clean:
 # Start Docker services
 docker-up:
 	@echo "$(YELLOW)Starting Docker services...$(NC)"
-	@if command -v docker-compose >/dev/null 2>&1; then \
-		docker-compose -f $(DOCKER_COMPOSE_FILE) up -d; \
-	else \
-		docker compose -f $(DOCKER_COMPOSE_FILE) up -d; \
-	fi
+	docker-compose -f $(DOCKER_COMPOSE_FILE) up -d
 	@echo "$(GREEN)Docker services started!$(NC)"
 	@echo "$(YELLOW)PostgreSQL:$(NC) localhost:5432"
 	@echo "$(YELLOW)Redis:$(NC) localhost:6379"
@@ -73,11 +69,7 @@ docker-up:
 # Start Docker services with tools (pgAdmin, Redis Commander)
 docker-up-tools:
 	@echo "$(YELLOW)Starting Docker services with tools...$(NC)"
-	@if command -v docker-compose >/dev/null 2>&1; then \
-		docker-compose -f $(DOCKER_COMPOSE_FILE) --profile tools up -d; \
-	else \
-		docker compose -f $(DOCKER_COMPOSE_FILE) --profile tools up -d; \
-	fi
+	docker-compose -f $(DOCKER_COMPOSE_FILE) --profile tools up -d
 	@echo "$(GREEN)Docker services with tools started!$(NC)"
 	@echo "$(YELLOW)PostgreSQL:$(NC) localhost:5432"
 	@echo "$(YELLOW)Redis:$(NC) localhost:6379"
@@ -87,52 +79,48 @@ docker-up-tools:
 # Stop Docker services
 docker-down:
 	@echo "$(YELLOW)Stopping Docker services...$(NC)"
-	@if command -v docker-compose >/dev/null 2>&1; then \
-		docker-compose -f $(DOCKER_COMPOSE_FILE) down; \
-	else \
-		docker compose -f $(DOCKER_COMPOSE_FILE) down; \
-	fi
+	docker-compose -f $(DOCKER_COMPOSE_FILE) down
 	@echo "$(GREEN)Docker services stopped!$(NC)"
 
 # View Docker logs
 docker-logs:
-	@if command -v docker-compose >/dev/null 2>&1; then \
-		docker-compose -f $(DOCKER_COMPOSE_FILE) logs -f; \
-	else \
-		docker compose -f $(DOCKER_COMPOSE_FILE) logs -f; \
-	fi
+	docker-compose -f $(DOCKER_COMPOSE_FILE) logs -f
 
 # Install migrate tool if not present
 install-migrate:
-	@if ! command -v migrate >/dev/null 2>&1; then \
-		echo "$(YELLOW)Installing golang-migrate...$(NC)"; \
-		OS=$(uname -s | tr '[:upper:]' '[:lower:]'); \
-		ARCH=$(uname -m); \
-		case $ARCH in \
-			x86_64) ARCH="amd64" ;; \
-			arm64|aarch64) ARCH="arm64" ;; \
-			*) echo "$(RED)Unsupported architecture: $ARCH$(NC)"; exit 1 ;; \
-		esac; \
-		case $OS in \
-			darwin) OS="darwin" ;; \
-			linux) OS="linux" ;; \
-			*) echo "$(RED)Unsupported OS: $OS$(NC)"; exit 1 ;; \
-		esac; \
-		MIGRATE_VERSION="v4.16.2"; \
-		DOWNLOAD_URL="https://github.com/golang-migrate/migrate/releases/download/$MIGRATE_VERSION/migrate.$OS-$ARCH.tar.gz"; \
-		echo "$(YELLOW)Downloading migrate for $OS-$ARCH...$(NC)"; \
-		curl -L $DOWNLOAD_URL | tar xvz; \
-		chmod +x migrate; \
-		if [ -w /usr/local/bin ]; then \
-			mv migrate /usr/local/bin/; \
-		else \
-			echo "$(YELLOW)Moving migrate to /usr/local/bin (requires sudo)...$(NC)"; \
-			sudo mv migrate /usr/local/bin/; \
-		fi; \
-		echo "$(GREEN)golang-migrate installed successfully$(NC)"; \
-	else \
-		echo "$(GREEN)golang-migrate is already installed$(NC)"; \
+	@which migrate > /dev/null || (echo "Installing golang-migrate..." && \
+		curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz && \
+		sudo mv migrate /usr/local/bin/)
+
+migrate-go-up:
+	@echo "Running database migrations using Go..."
+	@if [ ! -d "migrations" ]; then \
+		echo "Creating migrations directory..."; \
+		mkdir -p migrations; \
 	fi
+	@echo "Checking for migration files..."
+	@echo "Current directory: $$(pwd)"
+	@echo "Files in migrations/: $$(ls -la migrations/ 2>/dev/null || echo 'Directory not found')"
+	@echo "Looking for .up.sql files: $$(ls migrations/*.up.sql 2>/dev/null || echo 'No .up.sql files found')"
+	@if [ -z "$$(ls -A migrations/*.up.sql 2>/dev/null)" ]; then \
+		echo "No .up.sql migration files found. Skipping migrations..."; \
+	else \
+		echo "Found migration files, running migrations..."; \
+		go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest \
+			-path migrations \
+			-database "$(DB_URL)" \
+			-verbose up; \
+	fi
+	@echo "Migration process completed!"
+
+# Alternative: Rollback migrations using Go
+migrate-go-down:
+	@echo "Rolling back database migrations using Go..."
+	go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest \
+		-path migrations \
+		-database "$(DB_URL)" \
+		-verbose down 1
+	@echo "Rollback completed!"
 
 # Run database migrations up
 migrate-up: install-migrate
@@ -146,44 +134,17 @@ migrate-down: install-migrate
 	migrate -path migrations -database "$(DB_URL)" -verbose down 1
 	@echo "$(GREEN)Rollback completed!$(NC)"
 
-# Alternative: Run migrations using Go (without installing migrate binary)
-migrate-go-up:
-	@echo "$(YELLOW)Running database migrations using Go...$(NC)"
-	@if [ ! -d "migrations" ]; then \
-		echo "$(YELLOW)Creating migrations directory...$(NC)"; \
-		mkdir -p migrations; \
-	fi
-	@if [ -z "$(ls -A migrations 2>/dev/null)" ]; then \
-		echo "$(YELLOW)No migration files found. Skipping migrations...$(NC)"; \
-	else \
-		go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest \
-			-path migrations \
-			-database "$(DB_URL)" \
-			-verbose up; \
-	fi
-	@echo "$(GREEN)Migrations completed!$(NC)"
-
-# Alternative: Rollback migrations using Go
-migrate-go-down:
-	@echo "$(YELLOW)Rolling back database migrations using Go...$(NC)"
-	go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest \
-		-path migrations \
-		-database "$(DB_URL)" \
-		-verbose down 1
-	@echo "$(GREEN)Rollback completed!$(NC)"
-
-# Create a new migration using Go
-migrate-go-create:
+# Create a new migration
+migrate-create: install-migrate
 	@read -p "Enter migration name: " name; \
-	go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest \
-		create -ext sql -dir migrations $name
+	migrate create -ext sql -dir migrations $$name
 	@echo "$(GREEN)Migration files created!$(NC)"
 
 # Start development environment
 dev: docker-up
 	@echo "$(YELLOW)Waiting for services to be ready...$(NC)"
 	sleep 5
-	@echo "$(YELLOW)Running migrations...$(NC)"
+	@echo "$(YELLOW)Running migrations using Go...$(NC)"
 	make migrate-go-up
 	@echo "$(GREEN)Development environment ready!$(NC)"
 	@echo "$(YELLOW)Starting application...$(NC)"

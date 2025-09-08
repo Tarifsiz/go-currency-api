@@ -61,30 +61,32 @@ clean:
 # Start Docker services
 docker-up:
 	@echo "$(YELLOW)Starting Docker services...$(NC)"
-	docker-compose -f $(DOCKER_COMPOSE_FILE) up -d
+	@if command -v docker-compose >/dev/null 2>&1; then \
+		docker-compose -f $(DOCKER_COMPOSE_FILE) up -d; \
+	else \
+		docker compose -f $(DOCKER_COMPOSE_FILE) up -d; \
+	fi
 	@echo "$(GREEN)Docker services started!$(NC)"
 	@echo "$(YELLOW)PostgreSQL:$(NC) localhost:5432"
 	@echo "$(YELLOW)Redis:$(NC) localhost:6379"
 
-# Start Docker services with tools (pgAdmin, Redis Commander)
-docker-up-tools:
-	@echo "$(YELLOW)Starting Docker services with tools...$(NC)"
-	docker-compose -f $(DOCKER_COMPOSE_FILE) --profile tools up -d
-	@echo "$(GREEN)Docker services with tools started!$(NC)"
-	@echo "$(YELLOW)PostgreSQL:$(NC) localhost:5432"
-	@echo "$(YELLOW)Redis:$(NC) localhost:6379"
-	@echo "$(YELLOW)pgAdmin:$(NC) http://localhost:5050 (admin@admin.com / admin)"
-	@echo "$(YELLOW)Redis Commander:$(NC) http://localhost:8081"
-
 # Stop Docker services
 docker-down:
 	@echo "$(YELLOW)Stopping Docker services...$(NC)"
-	docker-compose -f $(DOCKER_COMPOSE_FILE) down
+	@if command -v docker-compose >/dev/null 2>&1; then \
+		docker-compose -f $(DOCKER_COMPOSE_FILE) down; \
+	else \
+		docker compose -f $(DOCKER_COMPOSE_FILE) down; \
+	fi
 	@echo "$(GREEN)Docker services stopped!$(NC)"
 
 # View Docker logs
 docker-logs:
-	docker-compose -f $(DOCKER_COMPOSE_FILE) logs -f
+	@if command -v docker-compose >/dev/null 2>&1; then \
+		docker-compose -f $(DOCKER_COMPOSE_FILE) logs -f; \
+	else \
+		docker compose -f $(DOCKER_COMPOSE_FILE) logs -f; \
+	fi
 
 # Install migrate tool if not present
 install-migrate:
